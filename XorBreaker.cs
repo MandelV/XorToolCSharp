@@ -73,7 +73,12 @@ namespace xortool
             keys = string.Join("", keys.GroupBy(c => c).Select(c => char.ToString(c.Key)).ToArray());
 
             Console.WriteLine(keys);
+            sw.Stop();
+            if (keys.Length == 0) return ("NotFound", "N/A", sw.ElapsedMilliseconds);
+
             Console.WriteLine(Xor(cipher, keys).Ic());
+
+            
             //For each permutation of keys
             foreach (var elem in CryptoTools.GetPermutationsWithRept(keys.ToList(), sizeChunk))
             {
