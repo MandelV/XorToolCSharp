@@ -17,10 +17,10 @@ namespace xortool
             XorBreaker xorBreaker = new XorBreaker();
             string text = File.ReadAllText("test.txt");
 
-            string key = "nnPq";
+            string key = "hgya";
             string cipher = xorBreaker.Xor(text, key);
 
-            var result = xorBreaker.breakXor(cipher, key.Length, 0.07);
+            var result = xorBreaker.breakXor(cipher, key.Length, 0.06);
 
             Console.WriteLine("Key : " + result.key + " - in : " + result.timeToBreak + " ms");
         }

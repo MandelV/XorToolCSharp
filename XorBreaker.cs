@@ -46,7 +46,7 @@ namespace xortool
 
             foreach (var block in trans)
             {
-                Dictionary<char, int> blockKeys = new Dictionary<char, int>();
+                Dictionary<string, int> blockKeys = new Dictionary<string, int>();
                 foreach (char ch in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
                 {
 
@@ -54,22 +54,26 @@ namespace xortool
 
                     if (text.IsPrintable() && text.Ic() >= ic - 0.01)//If the block is printable and its index is more than ic-0.01 we add the key into blockKeys
                     {
-                        if (blockKeys.ContainsKey(ch))
+                        var c = char.ToString(ch);
+                        if (blockKeys.ContainsKey(c))
                         {
-                            blockKeys[ch] += 1;
+                            blockKeys[c] += 1;
                         }
                         else
                         {
-                            blockKeys.Add(ch, 1);
+                            blockKeys.Add(c, 1);
                         }
 
                     }
                 }
                 //We order the letter to make the permutation process easier.
-                keys += new string(blockKeys.OrderBy(c => c.Value).Select(a => a.Key).ToArray());
+                keys +=  string.Join("", blockKeys.OrderBy(c => c.Value).Select(a => a.Key).ToArray());
 
             }
+            keys = string.Join("", keys.GroupBy(c => c).Select(c => char.ToString(c.Key)).ToArray());
 
+            Console.WriteLine(keys);
+            Console.WriteLine(Xor(cipher, keys).Ic());
             //For each permutation of keys
             foreach (var elem in CryptoTools.GetPermutationsWithRept(keys.ToList(), sizeChunk))
             {
