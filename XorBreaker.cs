@@ -47,12 +47,12 @@ namespace xortool
             foreach (var block in trans)
             {
                 Dictionary<string, int> blockKeys = new Dictionary<string, int>();
-                foreach (char ch in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                foreach (char ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
                 {
 
                     string text = Xor(block, char.ToString(ch));
 
-                    if (text.IsPrintable() && text.Ic() >= ic - 0.01)//If the block is printable and its index is more than ic-0.01 we add the key into blockKeys
+                    if (text.IsPrintable() && text.Ic() >= ic - 0.005)//If the block is printable and its index is more than ic-0.01 we add the key into blockKeys
                     {
                         var c = char.ToString(ch);
                         if (blockKeys.ContainsKey(c))
@@ -73,12 +73,13 @@ namespace xortool
             keys = string.Join("", keys.GroupBy(c => c).Select(c => char.ToString(c.Key)).ToArray());
 
             Console.WriteLine(keys);
-            sw.Stop();
-            if (keys.Length == 0) return ("NotFound", "N/A", sw.ElapsedMilliseconds);
 
-            Console.WriteLine(Xor(cipher, keys).Ic());
+            if (keys.Length == 0)
+            {
+                sw.Stop();
+                return ("NotFound", "N/A", sw.ElapsedMilliseconds);
+            }
 
-            
             //For each permutation of keys
             foreach (var elem in CryptoTools.GetPermutationsWithRept(keys.ToList(), sizeChunk))
             {
