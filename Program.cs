@@ -18,12 +18,17 @@ namespace xortool
             string text = File.ReadAllText("test.txt");
             Console.WriteLine(text.Ic());
 
-            string key = "ZGHT";
+            string key = "IYPJ";
             string cipher = xorBreaker.Xor(text, key);
 
-            var result = xorBreaker.breakXor(cipher, key.Length, 0.059);
-
-            Console.WriteLine("Key : " + result.key + " - in : " + result.timeToBreak + " ms");
+            var result = xorBreaker.breakXor(cipher, key.Length, 0.057);
+            
+            Console.WriteLine("in : " + result.timeToBreak + " ms");
+            int i = 0;
+            foreach (var kp in result.keyPlains)
+            {
+                Console.WriteLine(++i + ". " + kp.Key + " - " + kp.Value.Ic());
+            }
         }
     }
 }
