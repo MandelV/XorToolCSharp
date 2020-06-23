@@ -33,13 +33,16 @@ namespace xortool
         /// <param name="sizeChunk">size of you key</param>
         /// <param name="ic">threshold</param>
         /// <returns>Tuple (string, string) of key and plaintext</returns>
-        public ( string key, string plain, long timeToBreak) breakXor(string cipher, int sizeChunk, double ic = 0.07)
+        public (Dictionary<string, string> keyPlains, long timeToBreak) breakXor(string cipher, int sizeChunk, double ic = 0.07)
         {
             //To calculate the time to break
             Stopwatch sw = new Stopwatch();
             sw.Start();
             var blocks = CryptoTools.DivideText(cipher, sizeChunk).ToList();
             var trans = CryptoTools.Transposed(blocks);
+            Dictionary<string, string> keyPlains = new Dictionary<string, string>();
+
+
 
             //will contains the potential key used to encrypt the message
             string keys = "";
@@ -52,7 +55,7 @@ namespace xortool
 
                     string text = Xor(block, char.ToString(ch));
 
-                    if (text.IsPrintable() && text.Ic() >= ic - 0.005)//If the block is printable and its index is more than ic-0.01 we add the key into blockKeys
+                    if (text.IsPrintable() && text.Ic() >= ic - 0.01)//If the block is printable and its index is more than ic-0.01 we add the key into blockKeys
                     {
                         var c = char.ToString(ch);
                         if (blockKeys.ContainsKey(c))
@@ -72,12 +75,12 @@ namespace xortool
             }
             keys = string.Join("", keys.GroupBy(c => c).Select(c => char.ToString(c.Key)).ToArray());
 
-            Console.WriteLine(keys);
+            Console.WriteLine("Keys : {0} -  {1}", keys, keys.Length);
 
             if (keys.Length == 0)
             {
                 sw.Stop();
-                return ("NotFound", "N/A", sw.ElapsedMilliseconds);
+                return (keyPlains, sw.ElapsedMilliseconds);
             }
 
             //For each permutation of keys
@@ -91,12 +94,11 @@ namespace xortool
 
                 if (index >= ic)
                 {
-                    sw.Stop();
-                    return (key, plain, sw.ElapsedMilliseconds);
+                    keyPlains.Add(key, plain);
                 }
             }
             sw.Stop();
-            return ("NotFound", "N/A", sw.ElapsedMilliseconds);
+            return (keyPlains, sw.ElapsedMilliseconds);
         }
     }
 }
