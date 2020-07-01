@@ -15,19 +15,14 @@ namespace xortool
         {
             //if (args.Length == 0 || args.Length > 1) return;
             XorBreaker xorBreaker = new XorBreaker();
-            string text = File.ReadAllText("test.txt");
-            Console.WriteLine(text.Ic());
+            string text = File.ReadAllText("D/file_074.txt");
 
-            string key = "IYPJ";
-            string cipher = xorBreaker.Xor(text, key);
 
-            var result = xorBreaker.breakXor(cipher, key.Length, 0.057);
+            var result = xorBreaker.breakXor(text, 4, 0.06);
             
-            Console.WriteLine("in : " + result.timeToBreak + " ms");
-            int i = 0;
-            foreach (var kp in result.keyPlains)
+            foreach (var kp in result)
             {
-                Console.WriteLine(++i + ". " + kp.Key + " - " + kp.Value.Ic());
+                Console.WriteLine( kp.Key + " - " + kp.Value.Ic());
             }
         }
     }
